@@ -41,13 +41,13 @@ export class CreditScoreService {
       case Employment.Unemployed:
         score += 0;
         break;
-      case Employment.Ip:
+      case Employment.Individual:
         score += 12;
         break;
-      case Employment.Tk:
+      case Employment.Contract:
         score += 14;
         break;
-      case Employment.NonTk:
+      case Employment.Freelancer:
         score += 8;
         break;
       case Employment.Pensioner:
