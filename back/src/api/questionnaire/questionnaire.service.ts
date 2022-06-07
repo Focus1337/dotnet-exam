@@ -3,6 +3,7 @@ import { Questionnaire } from './questionnaire.entity';
 import { CreditRateService } from '../credit-rate/credit-rate.service';
 import { CreditResultDto } from '@/api/questionnaire/dto/credit-result.dto';
 import { CreditScoreService } from '@/api/credit-score/credit-score.service';
+import { CriminalStatusVerification } from '@/external-services/criminal-status.verification';
 
 @Injectable()
 export class QuestionnaireService {
@@ -12,14 +13,24 @@ export class QuestionnaireService {
   @Inject(CreditScoreService)
   private readonly creditScoreService: CreditScoreService;
 
-  public async getCredit(body: Questionnaire): Promise<CreditResultDto> {
-    // let criminalStatusIsCorrect = await _criminalStatusChecker.IsCriminalStatusCorrect(questionnaire);
-    // if (!criminalStatusIsCorrect)
-    //   return new JsonResult(new CreditResultModel(null, false, "Статус судимости не соответствует действительности", null));
+  @Inject(CriminalStatusVerification)
+  private readonly criminalStatusVerification: CriminalStatusVerification;
 
-    console.warn(body.passportGivenDate);
-    console.warn(body.employment);
-    console.warn(body.pledge);
+  public async getCredit(body: Questionnaire): Promise<CreditResultDto> {
+    const criminalStatusIsCorrect =
+      await this.criminalStatusVerification.verifyCriminalStatus(
+        +body.passportSeries,
+        +body.passportNumber,
+        body.criminalRecord,
+      );
+
+    if (!criminalStatusIsCorrect)
+      return {
+        Score: 0,
+        Message: 'Статус судимости не соответствует действительности',
+        Result: false,
+        creditRate: 0,
+      };
 
     const score = this.creditScoreService.calculateScore(body);
 

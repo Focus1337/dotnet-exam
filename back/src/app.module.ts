@@ -6,6 +6,7 @@ import { getEnvPath } from './common/helper/env.helper';
 import { ConfigModule } from '@nestjs/config';
 import { CreditRateModule } from './api/credit-rate/credit-rate.module';
 import { CreditScoreModule } from '@/api/credit-score/credit-score.module';
+import { CriminalStatusModule } from '@/external-services/criminal-status.module';
 
 const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 
@@ -14,6 +15,7 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
     QuestionnaireModule,
     CreditRateModule,
     CreditScoreModule,
+    CriminalStatusModule,
     ConfigModule.forRoot({ envFilePath, isGlobal: true }),
   ],
   controllers: [AppController],
