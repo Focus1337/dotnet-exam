@@ -26,17 +26,33 @@ export class CreditScoreService {
 
     // Баллы после учёта возраста
     if (age >= 21 && age <= 28) {
-      score += sum < 1000000 ? 12 : sum < 3000000 ? 9 : 0;
+      if (sum < 1000000) {
+        score += 12;
+      } else {
+        if (sum < 3000000) {
+          score += 9;
+        } else {
+          score += 0;
+        }
+      }
     } else if (age >= 29 && age <= 59) {
       score += 14;
     } else if (age >= 60 && age <= 72) {
-      score += pledge != Pledge.NonPledge ? 8 : 0;
+      if (pledge != Pledge.NonPledge) {
+        score += 8;
+      } else {
+        score += 0;
+      }
     } else {
       score += 0;
     }
 
     // Баллы после учёта сведений об учёте
-    score += criminalRecord == CriminalRecord.Yes ? 0 : 15;
+    if (criminalRecord == CriminalRecord.Yes) {
+      score += 0;
+    } else {
+      score += 15;
+    }
 
     // Баллы после учёта трудоустройства
     switch (employment) {
@@ -53,7 +69,11 @@ export class CreditScoreService {
         score += 8;
         break;
       case Employment.Pensioner:
-        score += age < 70 ? 5 : 0;
+        if (age < 70) {
+          score += 5;
+        } else {
+          score += 0;
+        }
         break;
       default:
         throw new Error('bad request: employment');
@@ -93,10 +113,15 @@ export class CreditScoreService {
     }
 
     // Баллы после учёта наличия других кредитов
-    score +=
-      otherLoans == OtherLoans.Yes
-        ? 0
-        : (score += goal == Goal.OnLending ? 0 : 15);
+    if (otherLoans == OtherLoans.Yes) {
+      score += 0;
+    } else {
+      if (goal == Goal.OnLending) {
+        score += 0;
+      } else {
+        score += 15;
+      }
+    }
 
     // Баллы после учёта предполагаемой суммы для взятия кредита
     if (sum >= 0 && sum <= 1000000) score += 12;
