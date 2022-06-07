@@ -16,21 +16,21 @@ function App() {
             passportGiven: "",
             passportGivenDate: "",
             passportRegistration: "",
-            age: "",
+            age: 0,
             criminalRecord: false,
-            sum: "",
+            sum: 0,
             goal: "",
             employment: "",
             otherLoans: false,
             pledge: "",
-            carAge: ""
+            carAge: 0
 
         }, validationSchema: yup.object({
             fullName: yup.string().required("Обязательное поле").max(50),
             passportSeries: yup.string().required("Обязательное поле").min(4, "Некорректные данные").max(4, "Некорректные данные"),
             passportNumber: yup.string().required("Обязательное поле").min(6, "Некорректные данные").max(6, "Некорректные данные"),
             passportGiven: yup.string().required("Обязательное поле").min(10, "Слишком коротко").max(40, "Слишком длинно"),
-            passportGivenDate: yup.string().required("Обязательное поле"),
+            passportGivenDate: yup.string().required("Обязательное поле. Формат: 2021-10-21"),
             passportRegistration: yup.string().required("Обязательное поле").min(5, "Слишком коротко").max(50, "Слишком длинно"),
             age: yup.number().required("Обязательное поле").min(18, "Вы слишком молоды").max(100, "Вы слишком стары"),
             criminalRecord: yup.string().required("Обязательное поле"),
@@ -79,7 +79,7 @@ function App() {
                             carAge
                         }
                     );
-                    alert(`${response.data.message} \n ${response.data.summ}`)
+                    alert(`Баллы: ${response.data.Score}\n Процентная ставка: ${response.data.creditRate}\n Разрешен ли кредит: ${response.data.Result}\n ${response.data.Message}`)
                 } catch (e) {
                     alert(e);
                 }
@@ -101,7 +101,9 @@ function App() {
     return (
         <div className="modal active">
             <form className="modal_wrapper bg-light" onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-                <div className="heading color-secondary-dark">Мгновенный кредит</div>
+                <div className="heading color-secondary-dark">
+                    <h2>Мгновенный кредит</h2>
+                </div>
 
                 <div className="horizontal">
                     <input
@@ -181,6 +183,26 @@ function App() {
                         </div>
                     </div>
 
+
+                    <input
+                        className="input"
+                        type="text"
+                        placeholder="Дата выдачи"
+                        name="passportGivenDate"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.passportGivenDate}
+                        autoComplete="off"
+                    />
+                    <div className="validation">
+                        <div className="color-danger error">
+                            {formik.touched.passportGivenDate && formik.errors.passportGivenDate ? (
+                                formik.errors.passportGivenDate
+                            ) : null}
+                        </div>
+                    </div>
+
+
                     <input
                         className="input"
                         type="text"
@@ -203,7 +225,7 @@ function App() {
                 <div className="block">
                     <input
                         className="input"
-                        type="text"
+                        type="number"
                         placeholder="Возраст"
                         name="age"
                         onChange={formik.handleChange}
@@ -224,7 +246,7 @@ function App() {
 
                 <input
                     className="input"
-                    type="text"
+                    type="number"
                     placeholder="Сумма кредита"
                     name="sum"
                     onChange={formik.handleChange}
@@ -249,9 +271,10 @@ function App() {
                     onBlur={formik.handleBlur}
                     value={formik.values.goal}
                 >
-                    <option value="1">Потребительский кредит</option>
-                    <option value="2">Недвижимость</option>
-                    <option value="3">Перекредитование</option>
+                    <option value="">Выберите...</option>
+                    <option value="Consumer">Потребительский кредит</option>
+                    <option value="RealEstate">Недвижимость</option>
+                    <option value="OnLending">Перекредитование</option>
                 </select>
                 <div className="validation">
                     <div className="color-danger error">
@@ -270,11 +293,12 @@ function App() {
                     onBlur={formik.handleBlur}
                     value={formik.values.employment}
                 >
-                    <option value="1">Безработный</option>
-                    <option value="2">Трудоустроен по трудовому договору</option>
-                    <option value="3">Собственное ИП</option>
-                    <option value="4">Фрилансер</option>
-                    <option value="5">Пенсионер</option>
+                    <option value="">Выберите...</option>
+                    <option value="Unemployed">Безработный</option>
+                    <option value="Contract">Трудоустроен по трудовому договору</option>
+                    <option value="Individual">Собственное ИП</option>
+                    <option value="Freelancer">Фрилансер</option>
+                    <option value="Pensioner">Пенсионер</option>
                 </select>
                 <div className="validation">
                     <div className="color-danger error">
@@ -336,16 +360,17 @@ function App() {
                     onBlur={formik.handleBlur}
                     value={formik.values.pledge}
                 >
-                    <option value="1" label="Без залога"></option>
-                    <option value="2">Недвижимость</option>
-                    <option value="3">Автомобиль</option>
-                    <option value="4">Поручительство</option>
+                    <option value="">Выберите...</option>
+                    <option value="NonPledge">Без залога</option>
+                    <option value="RealEstate">Недвижимость</option>
+                    <option value="Car">Автомобиль</option>
+                    <option value="Guarantee">Поручительство</option>
                 </select>
 
                 <input
                     style={formik.values.pledge === "3" ? openInput : hiddenInput}
                     className="input"
-                    type="text"
+                    type="number"
                     placeholder="Возраст авто"
                     name="carAge"
                     required={formik.values.pledge === "Автомобиль"}
@@ -371,12 +396,12 @@ function App() {
 
                 <button type="submit" className="button dark color-green" onClick={() => {
 
-                }}> Submit
+                }}> Получить
                 </button>
 
                 <button type="reset" className="button dark color-red" onClick={() => {
                     formik.resetForm();
-                }}> Reset
+                }}> Очистить
                 </button>
 
             </form>

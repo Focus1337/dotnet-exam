@@ -21,40 +21,15 @@ export class QuestionnaireService {
   @Inject(CriminalStatusVerification)
   private readonly criminalStatusVerification: CriminalStatusVerification;
 
-  // public async getAll(): Promise<Questionnaire[]> {
-  //   const credit: Questionnaire = {
-  //     fullName: 'Test Testov Testovich',
-  //     passportSeries: '9996',
-  //     passportNumber: '777087',
-  //     passportGiven: 'УФМС РФ ПО РТ г. Казань',
-  //     passportGivenDate: new Date(Date.now()),
-  //     passportRegistration: 'г. Казань, ул. Пушкина, д.18, кв. 12',
-  //     age: 18,
-  //     criminalRecord: false,
-  //     sum: 1000000,
-  //     goal: Goal.Consumer,
-  //     employment: Employment.Unemployed,
-  //     otherLoans: false,
-  //     pledge: Pledge.Car,
-  //     carAge: 2,
-  //   };
-  //
-  //   // const creditList: Questionnaire[] = ;
-  //
-  //   // creditList.push(credit);
-  //
-  //   return [credit];
-  // }
-
   public async getCredit(body: Questionnaire): Promise<CreditResultDto> {
-    const criminalStatusIsCorrect =
+    const verifyCriminalStatus =
       await this.criminalStatusVerification.verifyCriminalStatus(
         +body.passportSeries,
         +body.passportNumber,
         body.criminalRecord,
       );
 
-    if (!criminalStatusIsCorrect)
+    if (!verifyCriminalStatus)
       return {
         Score: 0,
         Message: "Criminal record status doesn't match",
