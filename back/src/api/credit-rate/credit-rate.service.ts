@@ -10,6 +10,6 @@ export class CreditRateService {
     if (score >= 84) return 26;
     if (score >= 80) return 30;
 
-    throw new Error("Score can't be less than 80");
+    throw new Error('Score less than 80');
   }
 }

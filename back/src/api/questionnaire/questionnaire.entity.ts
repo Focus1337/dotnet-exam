@@ -13,31 +13,34 @@ import {
 } from 'class-validator';
 
 export enum Employment {
-  Contract = 'Contract',
-  Individual = 'Individual',
-  Freelancer = 'Freelancer',
-  Pensioner = 'Pensioner',
-  Unemployed = 'Unemployed',
+  Unemployed = 1,
+  Contract = 2,
+  Individual = 3,
+  Freelancer = 4,
+  Pensioner = 5,
 }
 
 export enum Goal {
-  Consumer = 'Consumer',
-  RealEstate = 'RealEstate',
-  OnLending = 'OnLending',
+  Consumer = 1,
+  RealEstate = 2,
+  OnLending = 3,
 }
 
 export enum Pledge {
-  RealEstate = 'RealEstate',
-  Auto = 'Auto',
-  Guarantee = 'Guarantee',
-  NonPledge = 'NonPledge',
+  NonPledge = 1,
+  RealEstate = 2,
+  Car = 3,
+  Guarantee = 4,
 }
 
 export class Questionnaire {
+  // @IsNumber()
+  // public id: number;
+
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  public fio: string;
+  public fullName: string;
 
   @IsString()
   @IsNotEmpty()
@@ -89,12 +92,14 @@ export class Questionnaire {
 
   @IsBoolean()
   @IsNotEmpty()
-  public otherCredits: boolean;
+  public otherLoans: boolean;
 
   @IsEnum(Pledge)
   @IsNotEmpty()
   public pledge: Pledge;
 
   @IsInt()
-  public autoAge?: number;
+  @Min(0)
+  @Max(50)
+  public carAge?: number;
 }

@@ -15,9 +15,9 @@ export class CreditScoreService {
       sum,
       goal,
       employment,
-      otherCredits,
+      otherLoans,
       pledge,
-      autoAge,
+      carAge,
     }: Questionnaire = questionnaire;
 
     let score = 0;
@@ -54,7 +54,7 @@ export class CreditScoreService {
         score += age < 70 ? 5 : 0;
         break;
       default:
-        throw new Error('questionnaire.employment out of range');
+        throw new Error('bad request: employment');
     }
 
     // Баллы после учёта цели
@@ -69,7 +69,7 @@ export class CreditScoreService {
         score += 12;
         break;
       default:
-        throw new Error('questionnaire.goal out of range');
+        throw new Error('bad request: goal');
     }
 
     // Баллы после учёта залога
@@ -77,8 +77,8 @@ export class CreditScoreService {
       case Pledge.RealEstate:
         score += 14;
         break;
-      case Pledge.Auto:
-        score += autoAge < 3 ? 8 : 3;
+      case Pledge.Car:
+        score += carAge < 3 ? 8 : 3;
         break;
       case Pledge.Guarantee:
         score += 12;
@@ -87,11 +87,11 @@ export class CreditScoreService {
         score += 0;
         break;
       default:
-        throw new Error('questionnaire.pledge out of range');
+        throw new Error('bad request: pledge');
     }
 
     // Баллы после учёта наличия других кредитов
-    score += otherCredits ? 0 : (score += goal == Goal.OnLending ? 0 : 15);
+    score += otherLoans ? 0 : (score += goal == Goal.OnLending ? 0 : 15);
 
     // Баллы после учёта предполагаемой суммы для взятия кредита
     if (sum >= 0 && sum <= 1000000) score += 12;
