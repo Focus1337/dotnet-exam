@@ -1,10 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  Employment,
-  Goal,
-  Pledge,
-  Questionnaire,
-} from './questionnaire.entity';
+import { CriminalRecord, Questionnaire } from './questionnaire.entity';
 import { CreditRateService } from '../credit-rate/credit-rate.service';
 import { CreditResultDto } from '@/api/questionnaire/dto/credit-result.dto';
 import { CreditScoreService } from '@/api/credit-score/credit-score.service';
@@ -22,11 +17,13 @@ export class QuestionnaireService {
   private readonly criminalStatusVerification: CriminalStatusVerification;
 
   public async getCredit(body: Questionnaire): Promise<CreditResultDto> {
+    const crimStatus = body.criminalRecord == CriminalRecord.Yes ? true : false;
+
     const verifyCriminalStatus =
       await this.criminalStatusVerification.verifyCriminalStatus(
         +body.passportSeries,
         +body.passportNumber,
-        body.criminalRecord,
+        crimStatus,
       );
 
     if (!verifyCriminalStatus)

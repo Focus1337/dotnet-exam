@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import {
+  CriminalRecord,
   Employment,
   Goal,
+  OtherLoans,
   Pledge,
   Questionnaire,
 } from '@/api/questionnaire/questionnaire.entity';
@@ -34,7 +36,7 @@ export class CreditScoreService {
     }
 
     // Баллы после учёта сведений об учёте
-    score += criminalRecord ? 0 : 15;
+    score += criminalRecord == CriminalRecord.Yes ? 0 : 15;
 
     // Баллы после учёта трудоустройства
     switch (employment) {
@@ -91,7 +93,10 @@ export class CreditScoreService {
     }
 
     // Баллы после учёта наличия других кредитов
-    score += otherLoans ? 0 : (score += goal == Goal.OnLending ? 0 : 15);
+    score +=
+      otherLoans == OtherLoans.Yes
+        ? 0
+        : (score += goal == Goal.OnLending ? 0 : 15);
 
     // Баллы после учёта предполагаемой суммы для взятия кредита
     if (sum >= 0 && sum <= 1000000) score += 12;

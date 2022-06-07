@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CriminalRecord } from '@/api/questionnaire/questionnaire.entity';
 
 @Injectable()
 export class CriminalStatusVerification {

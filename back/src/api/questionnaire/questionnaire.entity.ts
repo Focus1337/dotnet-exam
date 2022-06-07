@@ -33,6 +33,16 @@ export enum Pledge {
   Guarantee = 'Guarantee',
 }
 
+export enum OtherLoans {
+  Yes = 'Yes',
+  No = 'No',
+}
+
+export enum CriminalRecord {
+  Yes = 'Yes',
+  No = 'No',
+}
+
 export class Questionnaire {
   @IsString()
   @IsNotEmpty()
@@ -69,9 +79,9 @@ export class Questionnaire {
   @Max(100)
   public age?: number;
 
-  @IsBoolean()
+  @IsEnum(CriminalRecord)
   @IsNotEmpty()
-  public criminalRecord: boolean;
+  public criminalRecord: CriminalRecord;
 
   @IsNumber()
   @IsNotEmpty()
@@ -87,9 +97,9 @@ export class Questionnaire {
   @IsNotEmpty()
   public employment?: Employment;
 
-  @IsBoolean()
+  @IsEnum(OtherLoans)
   @IsNotEmpty()
-  public otherLoans: boolean;
+  public otherLoans?: OtherLoans;
 
   @IsEnum(Pledge)
   @IsNotEmpty()
